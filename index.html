@@ -1,0 +1,565 @@
+<!doctype HTML>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>Circular sets and powers of two</title>
+    <style type="text/css">
+      body {max-width: 40em; margin: auto;
+      font-family: helvetica; 
+      line-height: 1.5em;
+      text-align: justify;
+      font-family: Verdana,Arial,'Lucida Grande',Sans-Serif;
+      }
+      .anchor { margin-left: 0.5em; }
+      .by { float: right; }
+      .clear { clear: both; }
+      .halfvisible { opacity: 0.5; }
+      .invisible {opacity: 0.01; }
+      h1 { margin-top: 3em; }
+      h2 { margin-top: 2em; }
+      h3 { margin-top: 1em; }
+      h1.title { margin-top: 0.75em; }
+      h1.btop { border-top: solid 3px black; padding-top: 0.55em; }
+      @media print { .anchor, .halfvisible, .invisible { visibility: hidden; } }
+      .red { color: #ff0000 }
+      .green { color: #00d400 }
+      .blue  { color: #0000ff }
+      figure { text-align: center; }
+      figcaption { margin-bottom: 3em; }
+      .result { border: solid 1px black; }
+    </style>
+  </head>
+  <body>
+    <h1 class="title">Circular sets and powers of two</h1>
+
+    <div class="by">by <a href="http://glat.info" title="home">G. Lathoud</a>, May 2017</div>
+
+    <div class="clear"></div>
+
+    <div class="by invisible"><a href="cipo.pdf" title="PDF">PDF</a></div>
+    
+    <div class="clear" style="margin-bottom: 4em"></div>
+
+    <h2>Contents</h2>
+
+    <div class="contents-cont"></div>
+          
+    <section id="disclaimer">
+
+      <h2>Disclaimer</h2>
+
+      <p>
+        This paper only presents a mathematical result and its
+        demonstration &mdash; nothing more. I'd&nbsp;be&nbsp;happy to receive
+        information about related work, and include it as good as I
+        can.
+
+      </p>
+    </section>
+
+    <section id="motivation">
+      <h2>Motivation</h2>
+
+      <p>Investigate a particular way to fill a circular set without repetition.</p>
+
+    </section>
+
+    <section id="def-circular-set">
+      <h2>Definition: circular set</h2>
+      
+      <p>Take $N$ holes arranged in a circle:</p>
+
+      <figure>
+        <img src="fig/n8.svg" alt="Example circular set with $N=8$" height="100px"/>
+        <figcaption>Example circular set with $N=8$</figcaption>                                                  
+      </figure>
+
+      <p>...pick one as the first hole #0, chose a direction
+        (e.g. counterclockwise), and name the following holes
+        accordingly #1, #2, ..., #($N-1$):
+      </p>
+
+      <figure>
+        <img src="fig/n8_number_direction.svg" alt="Circular set ($N=8$) with direction and numbers" height="150px"/>
+        <figcaption>Circular set ($N=8$) with direction and numbers</figcaption>                                                  
+      </figure>
+    </section>
+
+    <section id="example-filling-the-set">
+      <h2>Filling the set: an example ($N=8$)</h2>
+
+      <figure>
+        <img src="fig/n8_fill_0.svg" alt="First step: fill the first hole #0" height="150px"/>
+        <figcaption>Fill the first hole #0</figcaption>                                                  
+      </figure>
+
+      <figure>
+        <img src="fig/n8_fill_step2_fill_1.svg" alt="Second step: fill hole #1" height="150px"/>
+        <figcaption>Move $i=1$ hole forward, and fill the destination hole <span class="red">#1</span></figcaption>
+      </figure>
+
+      <figure>
+        <img src="fig/n8_fill_step3_fill_3.svg" alt="Third step: fill hole #3" height="150px"/>
+        <figcaption>Move $i=2$ holes forward, and fill the destination hole <span class="red">#3</span></figcaption>
+      </figure>
+
+      <figure>
+        <img src="fig/n8_fill_step4_fill_6.svg" alt="Fourth step: fill hole #6" height="150px"/>
+        <figcaption>Move $i=3$ holes forward, and fill the destination hole <span class="red">#6</span></figcaption>                                                  
+      </figure>
+
+      <figure>
+        <img src="fig/n8_fill_step5_fill_2.svg" alt="Fifth step: fill hole #2" height="150px"/>
+        <figcaption>Move $i=4$ holes forward, and fill the destination hole <span class="red">#2</span></figcaption>                                                  
+      </figure>
+
+      <figure>
+        <img src="fig/n8_fill_step678_fill_754.svg" alt="Sixth, seventh and eighth steps: fill holes #7, #5, #4" height="150px"/>
+        <figcaption>Last steps: We repeat the process, moving
+          forward:
+          <ul><li> <span class="red">$i=5$</span> holes (to <span class="red">#7</span>),</li>
+            <li>then <span class="green">$i=6$</span> holes (to <span class="green">#5</span>),</li>
+            <li>and finally <span class="blue">$i=7$</span> holes (to <span class="blue">#4</span>).</li>
+          </ul>
+        </figcaption>
+      </figure>
+      
+      <p>
+        At this point all holes have been filled, so we stop.
+        The order in which we filled the holes:
+        $ [ #0, #1, #3, #6, #2, #7, #5, #4 ] $
+        can be seen as a permutation of the first $N=8$ non-negative
+        integers.
+      </p>
+    </section>
+
+    <section id="success-and-failure">
+      <h2>Success and failure</h2>
+
+      <p>Repetitions are not accepted, i.e., whenever we land on a
+        hole that has already been filled, we call that a failure.
+        Example: $N=3$:
+      </p>
+
+      <figure>
+        <img src="fig/n3_failure.svg" alt="Failure for N=3" height="150px"/>
+        <figcaption>Failure for $N=3$</figcaption>                                                  
+      </figure>
+
+      <p>Looking at the first few values of $N$:</p>
+
+      <pre><code>
+          N=2     success
+          N=3              failure
+          N=4     success
+          N=5              failure
+          N=6              failure
+          N=7              failure
+          N=8     success
+          N=9              failure
+          ...              failure
+          N=15             failure
+          N=16    success
+          N=17             failure
+      </code></pre>
+
+      <p>Successes seem to correspond to powers of two: $N=2^q$ where $q \in \mathbb{N}_+^*$</p>
+
+    </section>
+
+    <section id="main-result">
+
+      <h2>Main result</h2>
+      
+      <p>
+        Formally: we define the property:
+
+        <blockquote>
+          $ P_{N} \triangleq$&nbsp;"for
+          the circular set of $N$ holes, for each step $i = 1 \dots N$, we land on an
+          empty hole (an thus after the $N$ steps all holes are filled)".
+        </blockquote>
+      </p>
+
+      <p>The main result of the present paper is:</p>
+
+      <p class="result">$$N\ is\ a\ power\ of\ two\  \Leftrightarrow\ P_N\ true$$</p>
+
+      <p>
+        where "$N$ is a power of two" means $log_2(N) \in \mathbb{N}_+$ or equivalently: $\exists\ q\ \in \mathbb{N}_+\ s.t.\ N=2^q$.
+      </p>
+
+      <p>
+        Appendix <a href="#a1">(A1)</a> demonstrates that $N\ power\ of\ 2 \Rightarrow\ P_N\ true$.
+      </p>
+
+      <p>
+        Appendix <a href="#a2">(A2)</a> demonstrates that $N\ not\ a\ power\ of\ 2 \Rightarrow\ P_N\ false$.
+      </p>
+      
+    </section>
+
+    
+    <h1 class="btop">Openings</h1>
+    
+    <section id="o1-as-a-permutation">
+
+      <h2>(O1): Filling, seen as a permutation</h2>
+
+      <p>
+        The order in which we fill the holes, e.g. for $N=8$: 
+        $[ #0, #1, #3, #6, #2, #7, #5, #4 ]$
+        can be seen as a permutation of the first $N=8$ non-negative
+        integers.
+      </p>
+
+      <p>
+        What happens if we repeat this permutation?
+      </p>
+
+      <!--pre><code>
+          N=4 (2^2)
+          
+          step  0  current  0,1,2,3
+          step  1  current  0,1,3,2
+          step  2  current  0,1,2,3
+
+          => period: 2
+      </code></pre-->
+
+      <pre><code>
+          N=8 (2^3)
+          
+          step  0  current  0,1,2,3,4,5,6,7
+          step  1  current  0,1,3,6,2,7,5,4
+          step  2  current  0,1,6,5,3,4,7,2
+          step  3  current  0,1,5,7,6,2,4,3
+          step  4  current  0,1,7,4,5,3,2,6
+          step  5  current  0,1,4,2,7,6,3,5
+          step  6  current  0,1,2,3,4,5,6,7
+
+          => period: 6
+      </code></pre>
+
+      <p>
+        So we can observe a periodicity.
+        What about other values of $N=2^q$?
+      </p>
+
+      <pre><code>
+          N=   4 (2^2)     period:       2
+          N=   8 (2^3)     period:       6
+          N=  16 (2^4)     period:      14
+          N=  32 (2^5)     period:      30
+          N=  64 (2^6)     period:    2280
+          N= 128 (2^7)     period:   18480
+          N= 256 (2^8)     period:    2964
+          N= 512 (2^9)     period:   10248
+          N=1024 (2^10)    period: 6036022
+      </code></pre>
+
+      <p>
+        These results were obtained using this JavaScript
+        <a href="permutations.js">code</a>, running it in a browser
+        console.
+      </p>
+
+      <p>
+        <em>Open questions:</em> Do all power of two $N=2^q$
+        have a periodicity? If yes, can someone derive a formula
+        giving the period as a function of $N$, i.e. the series (2,6,14,30,2280,...)?
+      </p>
+      
+
+    </section>
+
+    <section id="o2-about-other-filling-methods">
+      
+      <h2>(O2): About other filling methods</h2>
+
+      <p>
+        This paper investigated the particular filling method, where at each step
+        $i$ we move $j=i$ holes forward, thus defining the series:
+
+        $$ (j)_i = (1,2,3,\dots,N-1) $$
+        
+        Besides the obvious "uniform" filling method, where we move
+        1&nbsp;hole forward each time:
+
+        $$ (j)_i = (1,1,1,\dots,1) $$
+
+        ...are there other "non-uniform" filling methods without repetition,
+        at least for $N$ being a power of two?
+      <p>
+
+      <p>
+        For example, for $N=2^2=4$ the answer is yes. Besides the
+        filling method investigated so far:
+
+        $$ (j)_i = (1,2,3) $$
+
+        there is also:
+
+        $$ (j)_i = (3,2,1) $$
+        
+        which is equivalent to invert the direction. If we additionally
+        restrict $(j)_i$ being itself a permutation of
+        $(1,2,3,...,N-1)$, these are the only two possibilities for $(j)_i$ for
+        $N=4$.
+      </p>
+
+      <p>
+        <em>Open question:</em> Are there other methods $(j)_i$ to fill
+          without repetition, which work for all $N$ powers of two?
+          Especially when we restrict the series $(j)_i$&nbsp;being itself
+          a permutation of $(i)_i = (1,2,3,...,N-1)$ ?
+       
+      </p>
+        
+    
+    <h1 class="btop">Appendices</h1>
+
+    <section id="a1">
+
+      <h2>(A1) Show that $N\ power\ of\ 2 \Rightarrow\ P_N\ true$</h2>
+
+      <p>Let us assume $H_1$ and $H_2$:</p>
+      
+      <dl>
+        <dt>$H_1$</dt><dd>$N$ is a power of two: $\exists\ q\ \in \mathbb{N}_+^*\ s.t.\ N=2^q$</dd>
+        <dt>$H_2$</dt><dd>$P_N\ false$, i.e. in at least one of the $N$ steps $i=1 \dots N$, we land on a hole that has already been filled: $$\exists (a,b)\in\mathbb{N}^2\ s.t.\ 0 \le a \lt b \lt N\ and\ V_a \equiv V_b\ [N]$$ 
+        </dd>
+      </dl>
+
+      <p>
+        where:
+      </p>
+      <ul>
+        <li>$V_i$ is, at step $i$, the total number of holes we've been moving since the beginning: $$V_i \triangleq \sum_{j=1}^{i} j = \frac{i(i+1)}{2}$$</li>
+        <li>$V_a \equiv V_b\ [N]$ means congruence modulo $N$: $$\exists k \in \mathbb{N}\ s.t.\ V_b - V_a = k \cdot N$$</li>
+      </ul>
+
+      <p>$H_2$ implies: $$\exists k \in \mathbb{N}\ s.t.\ \frac{b(b+1)}{2} - \frac{a(a+1)}{2} = k \cdot N$$</p>
+
+      <p>which we can rewrite:
+
+        $$b^2 - a^2 + b - a = 2 \cdot k \cdot N$$
+        $$(b - a) \cdot (b + a  + 1) = 2 \cdot k \cdot N \hspace{2.5em} (\alpha)$$
+
+      </p>
+
+      <p>
+        Observations: $b-a$ and $b+a$ have same parities, hence
+        $b-a$ and $b+a+1$ have opposite parities,
+        i.e. one is odd and the other one is even.
+      </p>
+
+      <p>
+
+        On the right hand side, $2 \cdot N = 2^{q+1}$ is a power of two,
+        thus $k$ must be odd. Moreover, since $(b - a)$, $(b+a+1)$ and $2 \cdot N$
+        are all non-negative, we have $k > 0$.
+      </p>
+
+      <p>
+        Summarized: $k \ge 1$, and $k$ is the only odd term on the right hand side.
+      </p>
+      
+      <p>
+        Let us assume $k = 1$.  Because the two terms on the left hand side have opposite parities, then either $a+b+1=1$ (impossible), or
+        $b-a=1$ i.e. $b=a+1$ so $(\alpha)$ can be written: $1 \cdot 2
+        \cdot b = 1 \cdot 2 \cdot N$, and thus $b=N$, which is impossible as well.
+      </p>
+
+      <p>
+        Therefore: $k$ is odd and $k \ge 3$.
+      </p-->
+
+      <section id="a1-b-a-k">
+
+        <h3>(A1.a) Let us assume $b-a=k$</h3>
+
+        <p>$(\alpha)$ can be rewritten:
+          
+          $$k \cdot (1+2a+k) = 2 \cdot k \cdot N$$
+          
+          $$1+2a+k = 2\cdot N$$
+
+          $$a = N - \frac{k+1}{2}$$
+
+          $$b = a + k = N + \frac{2k - k - 1}{ 2 }$$
+
+          $$b = N + \frac{k-1}{2}$$
+
+          Since $k \ge 3$, we have $b \gt N$, which is impossible.
+        </p>
+        
+      </section>
+
+      <section id="a1-a-b-1-k">
+
+        <h3>(A1.b) Let us assume $a+b+1=k$</h3>
+        
+        <p>i.e.
+          $$b-a = b-(k - (b+1)) = 2b - k + 1$$
+
+          $(\alpha)$ can be rewritten:
+
+          $$(2b - k + 1) \cdot k = 2 \cdot k \cdot N$$
+
+          $$2b - k + 1 = 2 N$$
+
+          $$b = N + \frac{k-1}{2}$$
+
+          Since $k \ge 3$, we have $b \gt N$, which is impossible.
+        </p>
+        
+      </section>
+
+      <section id="a1-conclusion">
+
+        <h3>Conclusion of (A1)</h3>
+
+        <p>For $q \in \mathbb{N}_+^*$ and $N=2^q$, assuming $P_N$ false leads to a contradiction, therefore $P_N$ is true. $P_{2^0}=P_1$ is obvious, therefore:</p>
+
+        <p class="result">$$\forall q \in \mathbb{N}_+\ P_{2^q}\ true$$</p>
+        
+        
+      </section>
+      
+    </section>
+
+    <section id="a2">
+
+      <h2>(A2) Show that $N\ not\ a\ power\ of\ 2 \Rightarrow\ P_N\ false$</h2>
+
+      <p>Formally: we want to show that:</p>
+
+      <p class="result">
+        $$ \forall N \in \mathbb{N}_+^* \ s.t.\ log_2 N \notin \mathbb{N}$$
+        
+        $$ \exists (a,b) \in \mathbb{N}^2 \hspace{1em} 0 \le a \lt b \lt N \hspace{1em} s.t. \hspace{1em} V_a \equiv V_b \ [N] $$
+      </p>
+
+      <p>
+        where $V_i \triangleq \frac{i(i+1)}{2}$ is the number of holes we've moved since the beginning.
+      </p>
+      
+      <p>For $(a,b) \in \mathbb{N}^2$, we define the property:</p>
+
+      <p>
+        $$T_{a,b} \hspace{1em} \triangleq \hspace{1em} 0 \le a \lt b \lt N \hspace{0.75em} and\hspace{0.75em}  V_a \equiv V_b \ [N]$$
+      </p>
+
+      <p>
+        To prove the result, we need to find at least one value of $(a,b)$ that verifies $T_{a,b}$
+      </p>
+      
+      <section id="a21-subcase-n-odd">
+
+        <h3>(A2.1) Case: $N=2p+1$ where $p \in \mathbb{N}_+^*$</h3>
+
+        <p>
+          Since $V_i \triangleq \frac{i(i+1)}{2}$ we can write:
+
+          $$V_{p+1} - V_{p-1} = p+1 \ + \ p = N$$
+        
+          Thus, $a = p - 1$ and $b = p + 1$ verify $T_{a,b}$.
+        </p>
+        
+      </section>
+
+      <section>
+
+        <h3>Transition</h3>
+
+        <p>
+          It remains to find $(a,b)$ verifying $T_{a,b}$ when $N=2p$ is not a power of two.
+        </p>
+
+      </section>
+
+      <section id="a22-subcase-n-even-not-power-of-2">
+
+        <h3>(A2.2) Case: $N$ even but not a power of two</h3>
+
+        <p>
+          i.e.
+          $$\exists (p,q) \in (\mathbb{N}_+^*)^2 \hspace{1.5em} N=2^q \cdot (2p+1)$$
+
+          e.g.
+        </p>
+
+        <pre><code>
+            N =  6 = 2*3   q:1   p:1
+            N = 10 = 2*5   q:1   p:2
+            N = 12 = 4*3   q:2   p:1
+            N = 14 = 2*7   q:1   p:3
+        </code></pre>
+
+        <section id="a221-p-ge-2powq">
+
+          <h4>(A2.2.1) When $p \ge 2^q$</h4>
+
+          <p>Let $a = p - 2^q$ and $b = p + 2^q$.</p>
+
+          <p>We have $0 \le a$ and $a \lt b$ and $N - b = 2^q \cdot 2p - p = p (2^{q+1} - 1) > 0$</p>
+
+          <p>therefore we have $0 \le a \lt b \lt N$.</p>
+
+          <p>Besides,</p>
+
+          <p>
+            $$V_b - V_a = \sum_{j=1}^{p+2^q} j \hspace{1em} - \hspace{1em} \sum_{j=1}^{p-2^q} j$$
+            
+            $$= \sum_{j=p-2^q}^{p+2^q} j \hspace{1em} - \hspace{1em} (p - 2^q)$$
+            
+            $$= p \cdot (2 \cdot 2^q + 1) - (p - 2^q)$$
+            
+            $$= 2^q \cdot (2p + 1)$$
+
+            $$= N$$
+          </p>
+
+          <p>$(a,b)$ verify $T_{a,b}$.</p>
+          
+        </section>
+
+        <section id="a222-p-lt-2powq">
+
+          <h4>(A2.2.2) When $p \lt 2^q$</h4>
+
+          <p>Let $a = 2^q - p -1$ and $b = 2^q + p$.</p>
+
+          <p>We can show, as in (A2.2.1), that $0 \le a \lt b \lt N$.</p>
+
+          <p>Besides,</p>
+
+          <p>
+            $$V_b - V_a
+            = \sum_{j=1}^{2^q + p} j \hspace{1em} - \hspace{1em} \sum_{j=1}^{2^q-p-1} j$$
+            
+            $$= \sum_{j=2^q -p}^{2^q + p} j
+
+            = 2^q \cdot (2p+1)$$
+
+            $$= N$$
+          </p>
+            
+          <p>Thus $(a,b)$ verify $T_{a,b}$.</p>
+
+        </section>
+        
+      </section>
+      
+    </section>
+
+    <script type="text/javascript" src="index.js"></script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}});
+    </script>
+    <script type="text/javascript" async src="MathJax-master/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+
+  </body>
+</html>
