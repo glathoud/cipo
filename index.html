@@ -44,23 +44,26 @@
 
     <div class="contents-cont"></div>
           
-    <section id="disclaimer">
+    <!-- <section id="disclaimer"> -->
 
-      <h2>Disclaimer</h2>
+    <!--   <h2>Disclaimer</h2> -->
+
+    <!--   <p> -->
+    <!--     This paper only presents a mathematical result and its -->
+    <!--     demonstration &mdash; nothing more. I'd&nbsp;be&nbsp;happy to receive -->
+    <!--     information about related work, and include it as good as I -->
+    <!--     can. -->
+
+    <!--   </p> -->
+    <!-- </section> -->
+
+    <section id="summary">
+      <h2>Summary</h2>
 
       <p>
-        This paper only presents a mathematical result and its
-        demonstration &mdash; nothing more. I'd&nbsp;be&nbsp;happy to receive
-        information about related work, and include it as good as I
-        can.
-
+        This paper investigates a non-uniform way to visit a circular set without repetition.
+        Interestingly, it turns out that only circular sets of $2^q$ elements permit this.
       </p>
-    </section>
-
-    <section id="motivation">
-      <h2>Motivation</h2>
-
-      <p>Investigate a particular way to fill a circular set without repetition.</p>
 
     </section>
 
@@ -170,6 +173,10 @@
     <section id="main-result">
 
       <h2>Main result</h2>
+
+      <p>
+        <strong>A circular set of $N$ elements can be visited in the above&ndash;described non&ndash;uniform way if and only if $N$ is a power of two ($N=2^q$).</strong>
+      </p>
       
       <p>
         Formally: we define the property:
@@ -264,12 +271,45 @@
         console.
       </p>
 
-      <p>
-        <em>Open questions:</em> Do all power of two $N=2^q$
-        have a periodicity? If yes, can someone derive a formula
-        giving the period as a function of $N$, i.e. the series (2,6,14,30,2280,...)?
-      </p>
-      
+<p>
+  More results, thanks to <a href="https://groups.google.com/d/msg/sci.math/-cUYbGuH6XU/V0PUJVO-AQAJ">James Waldby</a>:
+</p>
+
+<pre><code>N=2048     (2^11)  period: 2013788
+N=4096     (2^12)  period: 182700
+N=8192     (2^13)  period: 23591700149148
+N=16384    (2^14)  period: 19958999294520
+N=32768    (2^15)  period: 6959639094969183480
+N=65536    (2^16)  period: 26192250762550684725571680
+N=131072   (2^17)  period: 3643607285677121265513086436360
+N=262144   (2^18)  period: 552425176567480329867600
+N=524288   (2^19)  period: 1104886883792843540368115115103595714814480
+N=1048576  (2^20)  period: 598516403943830902612507349753400
+N=2097152  (2^21)  period: 145205898084376835266284046071840
+N=4194304  (2^22)  period: 2218238870433506133002290060782067400445862406820
+N=8388608  (2^23)  period: 1284879737068585718960296765948422911523733198261847333520
+N=16777216 (2^24)  period: 44942096361329939149161891089213686455000
+N=33554432 (2^25)  period: 29792203744656340656203106393819329353621249230
+N=67108864 (2^26)  period: 100060465407260592657061740391450002788223169808280
+
+N=134217728 (2^27) period: 87591110*34361487*3291274*3343185*3360928*353498*323522
+                           *1345478*158252*47767*17776*11159*84*5927*59*2343*2681
+                           *530*235*162*208*30*31
+
+N=268435456 (2^28) period: 232647749*5559122*24918738*197080*384941*3742461*525140
+                           *62977*48736*21684*278834*2721*1625*8993*16632*13525*3073
+                           *153*1262*3*5
+
+N=536870912 (2^29) period: 379598603*129063661*26279056*137686*665648*222289*483286
+                           *10615*41767*80276*94323*5066*106713*15498*59199*2699*2816
+                           *1579*113*10*7 
+</code></pre>
+
+<p>
+  <em>Open questions:</em> For powers of two $N=2^q$, can someone derive a formula
+  giving the period as a function of $N$, i.e. the series (2,6,14,30,2280,...)?
+</p>
+
 
     </section>
 
