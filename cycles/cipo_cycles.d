@@ -57,11 +57,11 @@ int main( string[] args )
       write( format( "q: %d,  N=2^q: %d: running...", q, N ) );
       stdout.flush();
 
-      ulong  done_byte_length = N >> 3;
+      ulong  done_ubyte_length = N >> 3;
 
-      ubyte* done_byte = cast( ubyte* )( malloc( done_byte_length ) );
-      for (ulong a = done_byte_length; a--;)
-        done_byte[ a ] = 0;
+      ubyte* done_ubyte = cast( ubyte* )( malloc( done_ubyte_length ) );
+      for (ulong a = done_ubyte_length; a--;)
+        done_ubyte[ a ] = 0;
 
       
       ulong n_done = 0;
@@ -73,7 +73,7 @@ int main( string[] args )
            ++i_begin
            )
         {
-          if (done_byte[ i_begin >> 3 ] & (1 << (cast(ubyte)( i_begin % 8 ))))
+          if (done_ubyte[ i_begin >> 3 ] & (1 << (cast(ubyte)( i_begin % 8 ))))
             continue;
           
           ulong cylen = 0;
@@ -84,7 +84,7 @@ int main( string[] args )
               cylen++;
               n_done++;
 
-              done_byte[ i >> 3 ] |= (1 << (cast(ubyte)( i % 8 )));
+              done_ubyte[ i >> 3 ] |= (1 << (cast(ubyte)( i % 8 )));
 
               i = ((i * (i+1)) >> 1UL) % N;
             }
@@ -99,6 +99,8 @@ int main( string[] args )
                 , cylen_arr.length
                 , cylen_arr
                 );
+
+      free( done_ubyte );
 
     } // `q` loop
   
