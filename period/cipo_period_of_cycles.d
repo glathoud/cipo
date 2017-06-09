@@ -37,11 +37,15 @@ void main()
       auto PPP_list = cylen_arr.map!( PPP_of_ulong ).array;
       foreach( i, ppp; PPP_list )
         {
-          writeln( PPP_toString( ppp ), "    = ", cylen_arr[ i ] );
+          auto cylen = cylen_arr[ i ];
+          assert( ulong_of_PPP( ppp ) == cylen );
+          writeln( PPP_toString( ppp ), "    = ", cylen );
         }
 
       PPP period = PPP_lcm( PPP_list );
       writeln;
       writeln( "period (LCM of cycle lengths): ", PPP_toString( period ) );
+
+      stdout.flush();
     }
 }

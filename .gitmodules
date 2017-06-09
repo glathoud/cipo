@@ -1,0 +1,3 @@
+[submodule "d_glat_common"]
+	path = d_glat_common
+	url = https://github.com/glathoud/d_glat_common
