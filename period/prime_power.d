@@ -2,6 +2,7 @@ import d_glat_common.lib_search_dichotomy;
 
 import std.algorithm;
 import std.array;
+import std.container.array;
 import std.conv;
 import std.file;
 import std.math;
@@ -10,12 +11,15 @@ import std.stdio;
 import std.string;
 import std.typecons;
 
+import mrt; // xxx import mrt_mixin;
+
 /*
   Prime factorization of non-negative integers.
 
   Use at your own risk.
 
   Guillaume Lathoud, 2017
+  glat@glat.info
 */
 
 struct PP {
@@ -63,8 +67,7 @@ PPP PPP_of_ulong( in ulong x )
 
   ulong remaining = x;
 
-  auto tmp = is_maybe_prime( x );
-  if (!tmp.isNull  &&  tmp)
+  if (get_is_prime( x ))
     {
       ret ~= PP( x, 1 );
     }
@@ -76,11 +79,13 @@ PPP PPP_of_ulong( in ulong x )
       while (remaining > 1)
         {
           threshold = min( remaining, threshold * 2 );
-          
-          auto prili = get_prime_list_up_to( threshold );
-          
-          foreach( prime; prili[ prime_ind..$ ] )
+
+          auto prili_end_ind = get_prime_list_end_index_up_to( threshold );
+
+          for( ulong prili_ind = prime_ind; prili_ind < prili_end_ind; prili_ind++)
             {
+              ulong prime = _prime_list[ prili_ind ];
+              
               ulong power = 0;
               while (0 == remaining % prime)
                 {
@@ -94,7 +99,7 @@ PPP PPP_of_ulong( in ulong x )
                 }
             }
 
-          prime_ind = prili.length;
+          prime_ind = prili_end_ind;
         }
     }
   
@@ -204,27 +209,39 @@ private immutable ulong[] _first_ones =
     7727, 7741, 7753, 7757, 7759, 7789, 7793, 7817, 7823, 7829, 
     7841, 7853, 7867, 7873, 7877, 7879, 7883, 7901, 7907, 7919 ];
 
-private ulong[]       _prime_list   = _first_ones;
+private /*xxx ulong[]*/ Array!ulong _prime_list; // xxx   = _first_ones;
 private ulong         _prime_last_x;
 private bool[ ulong ] _prime_set;
 static this() {
+  // xxx _prime_list.assumeSafeAppend();
+
+  if (_prime_list.length < 1)
+    {
+      foreach (ulong one; [ 2, 3, 5, 7 ] )
+        _prime_list.insertBack( one );
+    }
+
+  assert( _prime_list.length > 0 );
+  
   _prime_last_x = _prime_list[ $-1 ];
   foreach( prime ; _prime_list )
     _prime_set[ prime ] = true;
 }
 
-Nullable!bool is_maybe_prime( in ulong x )
+bool get_is_prime( in ulong x )
 {
-  Nullable!bool ret;
+  pragma( inline, true );
   
-  if (x <= _prime_last_x)
-    ret = x in _prime_set  ?  true  :  false;
-  
-  return ret;
+  return x <= _prime_last_x
+    
+    ?  (x in _prime_set  ?  true  :  false)  // cached
+ 
+    :  mrt_get_is_prime( x )  // not cached yet
+    ;
 }
 
 
-ulong[] get_prime_list_up_to( in ulong x )
+ulong get_prime_list_end_index_up_to( in ulong x )
 {
   bool more_needed = _prime_last_x < x;
   
@@ -232,49 +249,12 @@ ulong[] get_prime_list_up_to( in ulong x )
     {
       ulong next = (_prime_last_x += 2);
 
-
-      // Speed up on big enough numbers, using inline tests:
-      static string code( in ulong[] arr ) pure
-      {
-        auto tmp = arr[ $-1 ];
-        return arr.map!( y => "0 == next % " ~ to!string( y ) ).join( "||" );
-      }
-
-      if (next > _first_ones[ $-1 ])
+      if (mrt_get_is_prime( next ))
         {
-          if (mixin( code( _first_ones )))
-            continue;
-        }
-      else if (next > _first_ones[ 101 ])
-        {
-          if (mixin( code( _first_ones[ 0..102 ])))
-            continue;
-        }
-      
-
-      
-      auto half_next = next >> 1;
-      bool is_prime  = true;
-      foreach( prime; _prime_list )
-        {
-          if (prime > half_next)
-            break;
-              
-          if (0 == next % prime)
-            {
-              is_prime = false;
-              break;
-            }
-        }
-      
-      if (is_prime)
-        {
-          _prime_list ~= next;
+          _prime_list.insertBack( next );  // xxx _prime_list ~= next;
           _prime_set[ next ] = true;
         }
     }
-
-  // if (more_needed) writeln( "xxx new _prime_last_x: ", _prime_last_x, ", length:", _prime_list.length );
 
   // Since _prime_list is sorted, we can go faster than a linear
   // check:
@@ -293,5 +273,5 @@ ulong[] get_prime_list_up_to( in ulong x )
       , ind0, ind1, prop
       );
 
-  return found  ?  _prime_list[ 0 .. ind0 ]  :  _prime_list;
+  return found  ?  ind0  :  _prime_list.length;
 }

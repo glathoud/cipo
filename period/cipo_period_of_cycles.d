@@ -14,7 +14,8 @@ import prime_power_lcm;
 
 void main()
 {
-  char[] data = cast( char[] )( std.file.read( "../cycles/cipo_cycles.result.txt" ) );
+
+char[] data = cast( char[] )( std.file.read( "../cycles/cipo_cycles.result.txt" ) );
   writeln( data );
 
   auto rx = ctRegex!( `^q:\s+(\d+)[^\r\n]+?\[\s*(\d+(?:\s*,\s*\d+)*)\s*\]`, "gm" );
@@ -48,4 +49,7 @@ void main()
 
       stdout.flush();
     }
+
+
+
 }
