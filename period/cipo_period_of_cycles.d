@@ -47,6 +47,22 @@ char[] data = cast( char[] )( std.file.read( "../cycles/cipo_cycles.result.txt" 
       writeln;
       writeln( "period (LCM of cycle lengths): ", PPP_toString( period ) );
 
+      if (q < 13 && false)
+        {
+          auto period_ul  = ulong_of_PPP( period );
+          writeln( "q < 13: quick comparison" );
+          writeln( "period (ulong): ", period_ul, ", sanity check: ", PPP_toString( PPP_of_ulong( period_ul ) ) );
+
+          auto to_compare = period_ul - 1;
+          auto to_compare_ppp = PPP_of_ulong( to_compare );
+          writeln( "to_compare: ", to_compare, " => factorized: ", PPP_toString( to_compare_ppp ) );
+
+          auto to_compare2 = period_ul - 2;
+          auto to_compare2_ppp = PPP_of_ulong( to_compare2 );
+          writeln( "to_compare2: ", to_compare2, " => factorized: ", PPP_toString( to_compare2_ppp ) );
+        }
+
+      
       stdout.flush();
     }
 
