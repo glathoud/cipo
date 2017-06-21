@@ -1,5 +1,3 @@
-import d_glat_common.lib_search_dichotomy;
-
 import std.algorithm;
 import std.array;
 import std.container.array;
@@ -61,8 +59,13 @@ ulong ulong_of_PPP( in PPP ppp )
 }
 
 
+private immutable ulong _PRIME_CACHE_END = 10_000_000_000;
+private immutable ulong _PRIME_SET_END   =  1_000_000_000;
+
 PPP PPP_of_ulong( in ulong x )
 {
+  // writeln; writeln("xxx ____ BEGIN PPP_of_ulong ", x );
+  
   PPP ret;
 
   ulong remaining = x;
@@ -74,35 +77,54 @@ PPP PPP_of_ulong( in ulong x )
   else
     {
       ulong prime_ind = 0;
-      ulong threshold = 1;
-      
+      ulong prime     = _prime_list[ prime_ind ];
+
       while (remaining > 1)
         {
-          threshold = min( remaining, threshold * 2 );
-
-          auto prili_end_ind = get_prime_list_end_index_up_to( threshold );
-
-          for( ulong prili_ind = prime_ind; prili_ind < prili_end_ind; prili_ind++)
+          // Try to factorize as much as possible using this prime.
+          
+          ulong power = 0;
+          while (0 == remaining % prime)
             {
-              ulong prime = _prime_list[ prili_ind ];
-              
-              ulong power = 0;
-              while (0 == remaining % prime)
-                {
-                  remaining /= prime;
-                  power++;
-                }
-              
-              if (power > 0)
-                {
-                  ret ~= PP( prime, power );
-                }
+              remaining /= prime;
+              power++;
             }
 
-          prime_ind = prili_end_ind;
-        }
+          if (power > 0)
+            ret ~= PP( prime, power );
+          
+          // Move to the next prime, taking advantage of caches as
+          // much as possible.
+           
+          if (prime_ind < _prime_list.length - 1)
+            {
+              prime = _prime_list[ ++prime_ind ];
+            }
+          else
+            {
+              ulong next = prime;
+              while (true)
+                {
+                  next += 2;
+                  if (mrt_get_is_prime( next ))
+                    {
+                      if (next < _PRIME_CACHE_END)
+                        _prime_list.insertBack( next );
+
+                      if (next < _PRIME_SET_END)
+                        _prime_set[ next ] = true;
+
+                      prime = next;
+                      break;
+                    }
+                }
+            }
+          
+        } // while (remaining > 1)
+
+      assert( remaining == 1 );
+
     }
-  
   return ret;
 }
 
@@ -232,46 +254,10 @@ bool get_is_prime( in ulong x )
 {
   pragma( inline, true );
   
-  return x <= _prime_last_x
+  return x <= _prime_last_x  &&  x < _PRIME_SET_END
     
     ?  (x in _prime_set  ?  true  :  false)  // cached
  
     :  mrt_get_is_prime( x )  // not cached yet
     ;
-}
-
-
-ulong get_prime_list_end_index_up_to( in ulong x )
-{
-  bool more_needed = _prime_last_x < x;
-  
-  while (_prime_last_x < x)
-    {
-      ulong next = (_prime_last_x += 2);
-
-      if (mrt_get_is_prime( next ))
-        {
-          _prime_list.insertBack( next );  // xxx _prime_list ~= next;
-          _prime_set[ next ] = true;
-        }
-    }
-
-  // Since _prime_list is sorted, we can go faster than a linear
-  // check:
-  // 
-  // auto ind = _prime_list.countUntil!( a => a > x );
-  //
-  // To that purpose we use bisection (dichotomy).
-
-  ulong  ind0;
-  ulong  ind1;
-  double prop;
-  bool found = search_dichotomy!
-    ( i => _prime_list[ i ] > x  ?  1  :  0 )
-    ( 1
-      , 0, _prime_list.length - 1
-      , ind0, ind1, prop
-      );
-
-  return found  ?  ind0  :  _prime_list.length;
 }

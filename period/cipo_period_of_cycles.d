@@ -38,9 +38,11 @@ char[] data = cast( char[] )( std.file.read( "../cycles/cipo_cycles.result.txt" 
       auto PPP_list = cylen_arr.map!( PPP_of_ulong ).array;
       foreach( i, ppp; PPP_list )
         {
+          // writeln; writeln("xxx ____ ppp BEGIN: i, ppp", i, PPP_toString( ppp ));
           auto cylen = cylen_arr[ i ];
           assert( ulong_of_PPP( ppp ) == cylen );
           writeln( PPP_toString( ppp ), "    = ", cylen );
+          // writeln; writeln("xxx ____ ppp END: i, ppp", i, PPP_toString( ppp ));
         }
 
       PPP period = PPP_lcm( PPP_list );
